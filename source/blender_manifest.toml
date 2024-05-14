@@ -1,0 +1,12 @@
+schema_version = "1.0.0"
+id = "atomic_blender_pdb_xyz"
+name = "Atomic Blender PDB/XYZ"
+version = "1.8.1"
+tagline = "Importing atoms listed in PDB or XYZ files as balls into Blender"
+maintainer = "Community"
+type = "add-on"
+tags = ["Import-Export"]
+blender_version_min = "4.2.0"
+license = ["SPDX:GPL-2.0-or-later"]
+website = "https://projects.blender.org/extensions/io_mesh_atomic"
+copyright = ["2024 Clemens Barth"]
