@@ -40,18 +40,6 @@
 #  Frank Palmino (Femto-St institute, Belfort-Montbéliard, France)
 #  ... for testing the addons and for feedback
 
-bl_info = {
-    "name": "Atomic Blender PDB/XYZ",
-    "description": "Importing atoms listed in PDB or XYZ files as balls into Blender",
-    "author": "Clemens Barth",
-    "version": (1, 8, 1),
-    "blender": (2, 80, 0),
-    "location": "File -> Import -> PDB (.pdb) and File -> Import -> XYZ (.xyz)",
-    "warning": "",
-    "doc_url": "{BLENDER_MANUAL_URL}/addons/import_export/mesh_atomic.html",
-    "category": "Import-Export",
-}
-
 import bpy
 from bpy.types import Operator, AddonPreferences
 from bpy_extras.io_utils import ImportHelper, ExportHelper
