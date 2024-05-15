@@ -340,6 +340,24 @@ def read_pdb_file(filepath_pdb, radiustype):
     return (Number_of_total_atoms, all_atoms)
 
 
+# Return a unit vector n_p, which is perpendicular to vector n.
+def find_n_perpendicular_to_n(n):
+
+    list_n_    = [    n[0],      n[1],      n[2]]
+    list_n     = [abs(n[0]), abs(n[1]), abs(n[2])]
+    list_n_index = [i[0] for i in sorted(enumerate(list_n), key=lambda x:x[1])]
+
+    n_p = Vector((0, 0, 0))
+
+    n_p[list_n_index[2]] = -list_n_[list_n_index[1]] / list_n_[list_n_index[2]]
+    n_p[list_n_index[1]] = 1
+    n_p[list_n_index[0]] = 0
+
+    n_p = n_p / n_p.length
+
+    return n_p
+
+
 # The function, which reads the sticks in a PDB file.
 def read_pdb_file_sticks(filepath_pdb, use_sticks_bonds, all_atoms):
 
@@ -423,15 +441,23 @@ def read_pdb_file_sticks(filepath_pdb, use_sticks_bonds, all_atoms):
                                 - all_atoms[basis_list[1]-1].location)
                         plane_n = basis1.cross(basis2)
 
-                        dist_n = (all_atoms[atom1-1].location
-                                - all_atoms[atom2-1].location)
-                        dist_n = dist_n.cross(plane_n)
-                        dist_n = dist_n / dist_n.length
+                        # If plane_n is a zero vector then get a
+                        # unit vector that is perpendicular to basis1
+                        if plane_n.length == 0:
+                            dist_n = find_n_perpendicular_to_n(basis1)
+                        # Otherwise, use the two basis vectors such that
+                        # the double/tripple bonds are well aligned.
+                        else:
+                            dist_n = (all_atoms[atom1-1].location
+                                    - all_atoms[atom2-1].location)
+                            dist_n = dist_n.cross(plane_n)
+                            dist_n = dist_n / dist_n.length
+
                     else:
                         dist_n = (all_atoms[atom1-1].location
                                 - all_atoms[atom2-1].location)
-                        dist_n = Vector((dist_n[1],-dist_n[0],0))
-                        dist_n = dist_n / dist_n.length
+
+                        dist_n = find_n_perpendicular_to_n(dist_n)
 
                 elif number > 3:
                     number = 1
@@ -855,12 +881,13 @@ def draw_sticks_dupliverts(all_atoms,
         # planes, on which the stick sections (cylinders) are perpendicular on.
         for stick in stick_list:
 
+
+            # We need a unit vector n_b, which is perpendicular to
+            # vector n.
             dv = stick[2]
             v1 = stick[1]
             n  = dv / dv.length
-            gamma = -n.dot(v1)
-            b     = v1 + gamma * n
-            n_b   = b / b.length
+            n_b = find_n_perpendicular_to_n(n)
 
             if use_sticks_color == True:
                 loops = int(ceil(dv.length / (2.0 * dl)))
