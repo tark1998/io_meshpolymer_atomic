@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import bpy
-from io_mesh_atomic.pdb_import import ELEMENTS_DEFAULT
+
+from .pdb_import import ELEMENTS_DEFAULT
 
 class AtomPropExport(object):
     __slots__ = ('element', 'location')

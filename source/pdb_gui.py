@@ -13,8 +13,8 @@ from bpy.props import (
         FloatProperty,
         )
 
-from io_mesh_atomic.pdb_import import import_pdb
-from io_mesh_atomic.pdb_export import export_pdb
+from .pdb_import import import_pdb
+from .pdb_export import export_pdb
 
 # -----------------------------------------------------------------------------
 #                                                                     Operators

@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import bpy
-from io_mesh_atomic.xyz_import import ELEMENTS_DEFAULT
+
+from .xyz_import import ELEMENTS_DEFAULT
 
 
 class AtomsExport(object):

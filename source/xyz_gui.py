@@ -13,12 +13,12 @@ from bpy.props import (
         FloatProperty,
         )
 
-from io_mesh_atomic.xyz_import import import_xyz
-from io_mesh_atomic.xyz_import import ALL_FRAMES
-from io_mesh_atomic.xyz_import import ELEMENTS
-from io_mesh_atomic.xyz_import import STRUCTURE
-from io_mesh_atomic.xyz_import import build_frames
-from io_mesh_atomic.xyz_export import export_xyz
+from .xyz_import import import_xyz
+from .xyz_import import ALL_FRAMES
+from .xyz_import import ELEMENTS
+from .xyz_import import STRUCTURE
+from .xyz_import import build_frames
+from .xyz_export import export_xyz
 
 # -----------------------------------------------------------------------------
 #                                                                     Operators

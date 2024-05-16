@@ -9,11 +9,11 @@ from bpy.props import (StringProperty,
                        FloatProperty,
                        BoolProperty)
 
-from io_mesh_atomic.utility_panel import choose_objects
-from io_mesh_atomic.utility_panel import custom_datafile
-from io_mesh_atomic.utility_panel import custom_datafile_change_atom_props
-from io_mesh_atomic.utility_panel import separate_atoms
-from io_mesh_atomic.utility_panel import distance
+from .utility_panel import choose_objects
+from .utility_panel import custom_datafile
+from .utility_panel import custom_datafile_change_atom_props
+from .utility_panel import separate_atoms
+from .utility_panel import distance
 
 
 # -----------------------------------------------------------------------------
