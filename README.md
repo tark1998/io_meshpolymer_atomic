@@ -8,13 +8,16 @@ described in PDB (``.pdb``) and XYZ files (``.xyz``) (Section [Import
 PDB/XYZ](#import-pdbxyz)). The add-on reads the coordinates of all
 atoms in the PDB/XYZ file and represents the atoms as balls in the
 Blender world. Also the sticks, which are described in PDB files only,
-are shown if the sticks are *explicitly* listed in the PDB file.
+are shown if the sticks are *explicitly* listed in the PDB file. For more
+information see the [Wiki page](https://projects.blender.org/extensions/io_mesh_atomic/wiki).
 
-To build a new version of the extension:
+## Building a new version of the extension
+
+To build a new version of the extension do:
 * `<path_to_blender> -c extension build --source-dir=./source`
 
 For more information about building extensions refer to the [documentation](https://docs.blender.org/manual/en/dev/extensions/getting_started.html).
 
 ---
 
-This add-on is offered as it is and maintaned by the community, no support expected.
+This add-on is offered as it is and maintaned by the community.
