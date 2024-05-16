@@ -1,22 +1,12 @@
-schema_version = "1.0.0"
-
-id         = "atomic_blender_pdb_xyz"
-version    = "1.9"
-name       = "Atomic Blender PDB/XYZ"
-tagline    = "Import atomic structures (molecules, crystals, clusters, particles, surfaces, etc.), which are described in PDB (.pdb) and XYZ files (.xyz)"
-maintainer = "Clemens Barth <barth at roo-1 dot com>"
-type       = "add-on"
-
-website    = "https://projects.blender.org/extensions/io_mesh_atomic"
-
-tags       = ["Import-Export"]
-
+schema_version      = "1.0.0"
+id                  = "atomic_blender_pdb_xyz"
+version             = "1.9"
+name                = "Atomic Blender PDB/XYZ"
+tagline             = "Importing atoms listed in PDB (.pdb) and XYZ files (.xyz) into Blender"
+maintainer          = "Clemens Barth <barth at root-1 dot de>"
+type                = "add-on"
+website             = "https://projects.blender.org/extensions/io_mesh_atomic"
+tags                = ["Import-Export"]
 blender_version_min = "4.2.0"
-
-license    = [
-  "SPDX:GPL-3.0-or-later",
-]
-
-copyright  = [
-  "2024 Clemens Barth",
-]
+license             = ["SPDX:GPL-3.0-or-later",]
+copyright           = [  "2024 Clemens Barth",]
