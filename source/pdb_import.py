@@ -651,12 +651,6 @@ def camera_light_source(use_camera,
         lamp.location = lamp_xyz_vec
         bpy.context.collection.objects.link(lamp)
 
-        # Some settings for the World: a bit ambient occlusion
-        bpy.context.scene.world.light_settings.use_ambient_occlusion = True
-        bpy.context.scene.world.light_settings.ao_factor = 0.1
-
-
-
 # Function, which draws the atoms of one type (balls). This is one
 # dupliverts structure then.
 # Return: the dupliverts structure
