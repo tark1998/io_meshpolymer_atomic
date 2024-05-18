@@ -103,9 +103,6 @@ class IMPORT_OT_pdb(Operator, ImportHelper):
     use_sticks_one_object: BoolProperty(
         name="One object", default=False,
         description="All sticks are one object")
-    use_sticks_one_object_nr: IntProperty(
-        name = "No.", default=200, min=10,
-        description="Number of sticks to be grouped at once")
     datafile: StringProperty(
         name = "", description="Path to your custom data file",
         maxlen = 256, default = "", subtype='FILE_PATH')
@@ -184,8 +181,6 @@ class IMPORT_OT_pdb(Operator, ImportHelper):
             col = row.column()
             col.prop(self, "use_sticks_one_object")
             col = row.column()
-            col.active = self.use_sticks_one_object
-            col.prop(self, "use_sticks_one_object_nr")
             row = box.row()
             row.active = self.use_sticks and self.use_sticks_bonds
             row.label(text="Distance")
@@ -214,7 +209,6 @@ class IMPORT_OT_pdb(Operator, ImportHelper):
                    self.use_sticks_smooth,
                    self.use_sticks_bonds,
                    self.use_sticks_one_object,
-                   self.use_sticks_one_object_nr,
                    self.sticks_unit_length,
                    self.sticks_dist,
                    self.sticks_sectors,

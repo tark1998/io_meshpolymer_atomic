@@ -1122,7 +1122,6 @@ def draw_sticks_normal(all_atoms,
                        Stick_dist,
                        use_sticks_smooth,
                        use_sticks_one_object,
-                       use_sticks_one_object_nr,
                        coll_molecule):
 
     stick_material = bpy.data.materials.new(ELEMENTS[-1].name)
@@ -1220,21 +1219,10 @@ def draw_sticks_normal(all_atoms,
                 stick_obj.select_set(True)
                 bpy.ops.object.shade_smooth()
 
-            list_group_sub.append(stick_obj)
+            # Material ...
+            stick_obj.active_material = stick_material
 
-            if use_sticks_one_object == True:
-                if counter == use_sticks_one_object_nr:
-                    bpy.ops.object.select_all(action='DESELECT')
-                    for stick_select in list_group_sub:
-                        stick_select.select_set(True)
-                    bpy.ops.object.join()
-                    list_group.append(bpy.context.view_layer.objects.active)
-                    bpy.ops.object.select_all(action='DESELECT')
-                    list_group_sub = []
-                    counter = 0
-            else:
-                # Material ...
-                stick_obj.active_material = stick_material
+            list_group_sub.append(stick_obj)
 
     if use_sticks_one_object == True:
         bpy.ops.object.select_all(action='DESELECT')
@@ -1251,6 +1239,7 @@ def draw_sticks_normal(all_atoms,
                                   center='MEDIAN')
         sticks = bpy.context.view_layer.objects.active
         sticks.active_material = stick_material
+        sticks.name = "Sticks_Cylinder_joined"
 
         sticks.location += center
 
@@ -1340,7 +1329,6 @@ def import_pdb(Ball_type,
                use_sticks_smooth,
                use_sticks_bonds,
                use_sticks_one_object,
-               use_sticks_one_object_nr,
                Stick_unit, Stick_dist,
                Stick_sectors,
                Stick_diameter,
@@ -1597,7 +1585,6 @@ def import_pdb(Ball_type,
                                     Stick_dist,
                                     use_sticks_smooth,
                                     use_sticks_one_object,
-                                    use_sticks_one_object_nr,
                                     coll_molecule)
         atom_object_list.append(sticks)
 
