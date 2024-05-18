@@ -400,8 +400,9 @@ def modify_objects(action_type,
         # First, identify if it is a normal cylinder object or a dupliverts
         # structure. The identifier for a dupliverts structure is the parent's
         # name, which includes "_sticks_mesh"
-        if "_sticks_mesh" in atom.parent.name:
-            atom.hide_set(False)
+        if atom.parent != None:
+            if "_sticks_mesh" in atom.parent.name:
+                atom.hide_set(False)
 
         bpy.context.view_layer.objects.active = atom
         bpy.ops.object.mode_set(mode='EDIT', toggle=False)
@@ -425,8 +426,9 @@ def modify_objects(action_type,
         bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
         # Hide again the representative stick (cylinder or cup) if it is a
         # dupliverts structure.
-        if "_sticks_mesh" in atom.parent.name:
-            atom.hide_set(True)
+        if atom.parent != None:
+            if "_sticks_mesh" in atom.parent.name:
+                atom.hide_set(True)
 
         bpy.context.view_layer.objects.active = None
 
