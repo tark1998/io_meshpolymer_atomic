@@ -1091,24 +1091,20 @@ def draw_sticks_skin(all_atoms,
 
     # This is somewhat a factor for the radius.
     r_f = 4.0
+
     # Apply operator 'skin_resize'.
-    bpy.ops.transform.skin_resize(
-        value=(
-            Stick_diameter * r_f,
-            Stick_diameter * r_f,
-            Stick_diameter * r_f,
-        ),
-        constraint_axis=(False, False, False),
-        orient_type='GLOBAL',
-        mirror=False,
-        use_proportional_edit=False,
-        snap=False,
-        snap_target='CLOSEST',
-        snap_point=(0, 0, 0),
-        snap_align=False,
-        snap_normal=(0, 0, 0),
-        release_confirm=False,
-    )
+    value = (Stick_diameter * r_f,
+             Stick_diameter * r_f,
+             Stick_diameter * r_f,)
+    bpy.ops.transform.skin_resize(value=value,
+                                  constraint_axis=(False, False, False),
+                                  orient_type='GLOBAL',
+                                  mirror=False,
+                                  use_proportional_edit=False,
+                                  snap=False,
+                                  snap_target='CLOSEST',
+                                  snap_point=(0, 0, 0),
+                                  release_confirm=False,)
     # Back to the OBJECT mode.
     bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
 
