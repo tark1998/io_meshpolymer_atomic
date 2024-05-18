@@ -969,7 +969,7 @@ def draw_obj_special(atom_shape, atom):
 
         # Put a point lamp inside the defect.
         lamp_data = bpy.data.lights.new(name=atom.name + "_F2+_lamp", type="POINT")
-        lamp_data.distance = atom.scale[0] * 2.0
+        lamp_data.shadow_soft_size = atom.scale[0] * 2.0
         lamp_data.energy = 2000.0
         lamp_data.color = (0.8, 0.8, 0.8)
         lamp = bpy.data.objects.new(atom.name + "_F2+_lamp", lamp_data)
@@ -1055,7 +1055,7 @@ def draw_obj_special(atom_shape, atom):
 
         # Put a point lamp inside the electron
         lamp_data = bpy.data.lights.new(name=atom.name + "_F+_lamp", type="POINT")
-        lamp_data.distance = atom.scale[0] * 2.0
+        lamp_data.shadow_soft_size = atom.scale[0] * 2.0
         lamp_data.energy = 100000.0
         lamp_data.color = (0.0, 0.0, 0.8)
         lamp = bpy.data.objects.new(atom.name + "_F+_lamp", lamp_data)
@@ -1155,7 +1155,7 @@ def draw_obj_special(atom_shape, atom):
 
         # Put two point lamps inside the electrons.
         lamp1_data = bpy.data.lights.new(name=atom.name + "_F0_lamp_1", type="POINT")
-        lamp1_data.distance = atom.scale[0] * 2.0
+        lamp1_data.shadow_soft_size = atom.scale[0] * 2.0
         lamp1_data.energy = 20000.0
         lamp1_data.color = (0.8, 0.0, 0.0)
         lamp1 = bpy.data.objects.new(atom.name + "_F0_lamp", lamp1_data)
@@ -1163,7 +1163,7 @@ def draw_obj_special(atom_shape, atom):
         bpy.context.collection.objects.link(lamp1)
         lamp1.parent = cube
         lamp2_data = bpy.data.lights.new(name=atom.name + "_F0_lamp_2", type="POINT")
-        lamp2_data.distance = atom.scale[0] * 2.0
+        lamp2_data.shadow_soft_size = atom.scale[0] * 2.0
         lamp2_data.energy = 20000.0
         lamp2_data.color = (0.8, 0.0, 0.0)
         lamp2 = bpy.data.objects.new(atom.name + "_F0_lamp", lamp2_data)
