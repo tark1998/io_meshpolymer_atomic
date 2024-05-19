@@ -14,6 +14,17 @@ Blender world. Also the sticks, which are described in PDB files only,
 are shown if the sticks are *explicitly* listed in the PDB file. For more
 information see the [Wiki page](https://projects.blender.org/extensions/io_mesh_atomic/wiki).
 
+> **Note**
+>
+> **Speed advantage**
+>
+> Thanks to the Blender specific method called 
+> [instancing vertices structure](https://docs.blender.org/manual/en/latest/scene_layout/object/properties/instancing/verts.html),
+> which is used to build an atomic structure, the speed of the loading
+> and the general handling of an atomic structure inside the Blender 3D View
+> is quite fast. Atomic structures with 1000 atoms and much more
+> can be easily handled.
+
 ---
 
 This add-on is offered as it is and maintaned by the community.
