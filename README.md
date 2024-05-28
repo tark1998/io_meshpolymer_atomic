@@ -18,7 +18,7 @@ information see the [Wiki page](https://projects.blender.org/extensions/io_mesh_
 >
 > **Speed advantage**
 >
-> Thanks to the Blender specific method called 
+> Thanks to the Blender specific method called
 > [instancing vertices structure](https://docs.blender.org/manual/en/latest/scene_layout/object/properties/instancing/verts.html),
 > which is used to build an atomic structure, the speed of the loading
 > and the general handling of an atomic structure inside the Blender 3D View
