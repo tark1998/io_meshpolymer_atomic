@@ -8,7 +8,7 @@
 #  Start of project                  : 2011-08-31 by CB
 #  First publication in Blender      : 2011-11-11 by CB
 #  Fusion of the PDB, XYZ and Panel  : 2019-03-22 by CB
-#  Last modified                     : 2024-05-16
+#  Last modified                     : 2024-05-28 by CB
 #
 #  Contributing authors
 #  ====================
