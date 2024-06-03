@@ -27,6 +27,7 @@ from .xyz_export import export_xyz
 class IMPORT_OT_xyz(Operator, ImportHelper):
     bl_idname = "import_mesh.xyz"
     bl_label  = "Import XYZ (*.xyz)"
+    bl_description = "Import a XYZ atomic structure"
     bl_options = {'PRESET', 'UNDO'}
 
     filename_ext = ".xyz"

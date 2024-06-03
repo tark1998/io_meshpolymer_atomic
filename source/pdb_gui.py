@@ -23,6 +23,7 @@ from .pdb_export import export_pdb
 class IMPORT_OT_pdb(Operator, ImportHelper):
     bl_idname = "import_mesh.pdb"
     bl_label  = "Import Protein Data Bank(*.pdb)"
+    bl_description = "Import a PDB atomic structure"
     bl_options = {'PRESET', 'UNDO'}
 
     filename_ext = ".pdb"
