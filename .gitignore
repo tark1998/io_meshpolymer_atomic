@@ -16,4 +16,5 @@ __pycache__/
 /*.diff
 
 # Locally built extensions.
-/*.zip
+*.zip
+
