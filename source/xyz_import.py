@@ -28,7 +28,7 @@ ELEMENTS_DEFAULT = (
 ( 3,       "Lithium",       "Li", (  0.8,  0.50,   1.0, 1.0), 1.23, 1.23, 2.05 ,  1 , 0.68 ),
 ( 4,     "Beryllium",       "Be", ( 0.76,   1.0,   0.0, 1.0), 0.90, 0.90, 1.40 ,  1 , 0.44 ,  2 , 0.35 ),
 ( 5,         "Boron",        "B", (  1.0,  0.70,  0.70, 1.0), 0.82, 0.82, 1.17 ,  1 , 0.35 ,  3 , 0.23 ),
-( 6,        "Carbon",        "C", ( 0.56,  0.56,  0.56, 1.0), 0.77, 0.77, 0.91 , -4 , 2.60 ,  4 , 0.16 ),
+( 6,       "Polymer",        "C", ( 0.56,  0.56,  0.56, 1.0), 0.77, 0.77, 0.91 , -4 , 2.60 ,  4 , 0.16 ),
 ( 7,      "Nitrogen",        "N", ( 0.18,  0.31,  0.97, 1.0), 0.75, 0.75, 0.75 , -3 , 1.71 ,  1 , 0.25 ,  3 , 0.16 ,  5 , 0.13 ),
 ( 8,        "Oxygen",        "O", (  1.0,  0.05,  0.05, 1.0), 0.73, 0.73, 0.65 , -2 , 1.32 , -1 , 1.76 ,  1 , 0.22 ,  6 , 0.09 ),
 ( 9,      "Fluorine",        "F", ( 0.56,  0.87,  0.31, 1.0), 0.72, 0.72, 0.57 , -1 , 1.33 ,  7 , 0.08 ),
@@ -37,7 +37,7 @@ ELEMENTS_DEFAULT = (
 (12,     "Magnesium",       "Mg", ( 0.54,   1.0,   0.0, 1.0), 1.36, 1.36, 1.72 ,  1 , 0.82 ,  2 , 0.66 ),
 (13,     "Aluminium",       "Al", ( 0.74,  0.65,  0.65, 1.0), 1.18, 1.18, 1.82 ,  3 , 0.51 ),
 (14,       "Silicon",       "Si", ( 0.94,  0.78,  0.62, 1.0), 1.11, 1.11, 1.46 , -4 , 2.71 , -1 , 3.84 ,  1 , 0.65 ,  4 , 0.42 ),
-(15,    "Phosphorus",        "P", (  1.0,  0.50,   0.0, 1.0), 1.06, 1.06, 1.23 , -3 , 2.12 ,  3 , 0.44 ,  5 , 0.35 ),
+(15,       "Polymer",        "P", (  1.0,  0.50,   0.0, 1.0), 1.06, 1.06, 1.23 , -3 , 2.12 ,  3 , 0.44 ,  5 , 0.35 ),
 (16,        "Sulfur",        "S", (  1.0,   1.0,  0.18, 1.0), 1.02, 1.02, 1.09 , -2 , 1.84 ,  2 , 2.19 ,  4 , 0.37 ,  6 , 0.30 ),
 (17,      "Chlorine",       "Cl", ( 0.12,  0.94,  0.12, 1.0), 0.99, 0.99, 0.97 , -1 , 1.81 ,  5 , 0.34 ,  7 , 0.27 ),
 (18,         "Argon",       "Ar", ( 0.50,  0.81,  0.89, 1.0), 0.98, 0.98, 0.88 ,  1 , 1.54 ),
@@ -641,15 +641,51 @@ def import_xyz(Ball_type,
         # ... link it to the collection, which contains all parts of the
         # element (ball and mesh).
         coll_element.children.link(coll_atom)
+        if atom.name == "Polymer":
+            # make a new curve
+            crv = bpy.data.curves.new('Curve_'+atom.name, 'CURVE')
+            crv.dimensions = '3D'
 
-        # Build the mesh
-        atom_mesh = bpy.data.meshes.new("Mesh_"+atom.name)
-        atom_mesh.from_pydata(atom_vertices, [], [])
-        atom_mesh.update()
-        new_atom_mesh = bpy.data.objects.new(atom.name + "_mesh", atom_mesh)
+            # make a new spline in that curve
+            spline = crv.splines.new(type='NURBS')
 
-        # Link active object to the new collection
-        coll_atom.objects.link(new_atom_mesh)
+            # a spline point for each point
+            spline.points.add(len(atoms_of_one_type)-1) # theres already one point by default
+            spline.use_endpoint_u = True
+            spline.use_endpoint_v = True
+            #crv.bevel_depth = 0.0003
+
+            # assign the point coordinates to the spline points
+            for p, new_co in zip(spline.points, atom_vertices):
+                #p.co = ([new_co[0]-sumx,new_co[1]-sumy,new_co[2]-sumz] + [1.0]) # (add nurbs weight)
+                p.co = (list(new_co) + [1.0]) # (add nurbs weight)
+
+            # make a new object with the curve
+            obj = bpy.data.objects.new(atom.name + "_curve", crv)
+            #obj.data.materials.append(mat1)
+
+            # cross section
+            obj.data.bevel_mode='OBJECT'
+            bpy.ops.curve.primitive_bezier_circle_add(location=(0,0,10))
+            circ_obj = bpy.context.object
+            for p in circ_obj.data.splines[0].bezier_points:
+                p.co *=  0.3 #radious
+            obj.data.bevel_object = circ_obj
+            obj.data.use_fill_caps=True
+
+            coll_atom.objects.link(obj)
+            circ_obj.users_collection[0].objects.unlink(circ_obj)
+            coll_atom.objects.link(circ_obj)
+
+        else:
+            # Build the mesh
+            atom_mesh = bpy.data.meshes.new("Mesh_"+atom.name)
+            atom_mesh.from_pydata(atom_vertices, [], [])
+            atom_mesh.update()
+            new_atom_mesh = bpy.data.objects.new(atom.name + "_mesh", atom_mesh)
+
+            # Link active object to the new collection
+            coll_atom.objects.link(new_atom_mesh)
 
         # Now, build a representative sphere (atom)
         if atom.name == "Vacancy":
@@ -657,6 +693,7 @@ def import_xyz(Ball_type,
                             align='WORLD', enter_editmode=False,
                             location=(0.0, 0.0, 0.0),
                             rotation=(0.0, 0.0, 0.0))
+        #elif atom.name == "Polymer": pass
         else:
             # NURBS balls
             if Ball_type == "0":
@@ -690,11 +727,20 @@ def import_xyz(Ball_type,
         else:
             ball.name = atom.name + "_ball"
         ball.active_material = atom.material
-        ball.parent = new_atom_mesh
-        new_atom_mesh.instance_type = 'VERTS'
-        # The object is back translated to 'object_center_vec'.
-        new_atom_mesh.location = object_center_vec
-        STRUCTURE.append(new_atom_mesh)
+
+        if atom.name == "Polymer":
+            #ball.parent = obj
+            obj.location = object_center_vec
+            obj.data.materials.append(atom.material)
+            STRUCTURE.append(obj)
+        else:
+            ball.parent = new_atom_mesh
+            new_atom_mesh.instance_type = 'VERTS'
+            # The object is back translated to 'object_center_vec'.
+            new_atom_mesh.location = object_center_vec
+            STRUCTURE.append(new_atom_mesh)
+            # Put the atom into the new collection 'atom' and ...
+            coll_atom.objects.link(ball)
 
         # Note the collection where the ball was placed into.
         coll_all = ball.users_collection
@@ -703,8 +749,6 @@ def import_xyz(Ball_type,
         else:
             coll_past = bpy.context.scene.collection
 
-        # Put the atom into the new collection 'atom' and ...
-        coll_atom.objects.link(ball)
         # ... unlink the atom from the other collection.
         coll_past.objects.unlink(ball)
 
@@ -735,13 +779,64 @@ def build_frames(frame_delta, frame_skip):
 
     # Introduce the basis for all elements that appear in the structure.
     for element in STRUCTURE:
-
-        bpy.ops.object.select_all(action='DESELECT')
-        bpy.context.view_layer.objects.active = element
-        element.select_set(True)
-        bpy.ops.object.shape_key_add(True)
+        if "curve" in element.name:
+            pass
+        else:
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.context.view_layer.objects.active = element
+            element.select_set(True)
+            bpy.ops.object.shape_key_add(True)
 
     frame_skip += 1
+
+    num_frames = len (ALL_FRAMES) // frame_skip
+    for k,elements_structure in enumerate(STRUCTURE):
+        if "curve" in elements_structure.name:
+            '''
+            ad = elements_structure.animation_data_create()
+            a = bpy.data.actions.new('newaction')
+
+            fcx = a.fcurves.new('location',index=0)
+            fcy = a.fcurves.new('location',index=1)
+            fcz = a.fcurves.new('location',index=2)
+
+            fcx.keyframe_points.add( num_frames)
+            fcy.keyframe_points.add( num_frames)
+            fcz.keyframe_points.add( num_frames)
+
+            fcx.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[0]*num_frames) for x in co])
+            fcy.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[0]*num_frames) for x in co])
+            fcz.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[0]*num_frames) for x in co])
+
+            fcx.update()
+            fcy.update()
+            fcz.update()
+
+            ad.action = a
+            '''
+
+            ad = elements_structure.data.splines.data.animation_data_create()
+            a = bpy.data.actions.new('Curve_'+elements_structure.name)
+
+            for j,point in enumerate(elements_structure.data.splines[0].points):
+                fcx = a.fcurves.new(f'splines[0].points[{j:d}].co',index=0)
+                fcy = a.fcurves.new(f'splines[0].points[{j:d}].co',index=1)
+                fcz = a.fcurves.new(f'splines[0].points[{j:d}].co',index=2)
+
+                fcx.keyframe_points.add( num_frames )
+                fcy.keyframe_points.add( num_frames )
+                fcz.keyframe_points.add( num_frames )
+
+                #xyz = Matrix([atom_frame.location for atom_frame in elements_frame])
+
+                fcx.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[ALL_FRAMES[h][k][j].location[0]-elements_structure.location[0] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
+                fcy.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[ALL_FRAMES[h][k][j].location[1]-elements_structure.location[1] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
+                fcz.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[ALL_FRAMES[h][k][j].location[2]-elements_structure.location[2] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
+
+                fcx.update()
+                fcy.update()
+                fcz.update()
+            ad.action = a
 
     # Introduce the keys and reference the atom positions for each key.
     i = 0
@@ -749,7 +844,8 @@ def build_frames(frame_delta, frame_skip):
 
         if j % frame_skip == 0:
 
-            for elements_frame, elements_structure in zip(frame,STRUCTURE):
+            for elements_frame,elements_structure in zip(frame,STRUCTURE):
+                if "curve" in elements_structure.name: continue
 
                 key = elements_structure.shape_key_add()
 
@@ -769,7 +865,7 @@ def build_frames(frame_delta, frame_skip):
 
     # Manage the values of the keys
     for element in STRUCTURE:
-
+        if "curve" in element.name: continue
         scn.frame_current = 0
 
         element.data.shape_keys.key_blocks[1].value = 1.0

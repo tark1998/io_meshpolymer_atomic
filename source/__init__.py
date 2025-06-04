@@ -80,7 +80,7 @@ class AddonPreferences(AddonPreferences):
     # (see utility.py).
     bool_utility : BoolProperty(
                    name="Utility panel",
-                   default=False,
+                   default=True,
                    description=("Panel with functionalities for modifying " \
                                 "atomic structures"),
                    )
