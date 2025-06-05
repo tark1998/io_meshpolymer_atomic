@@ -829,9 +829,9 @@ def build_frames(frame_delta, frame_skip):
 
                 #xyz = Matrix([atom_frame.location for atom_frame in elements_frame])
 
-                fcx.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[ALL_FRAMES[h][k][j].location[0]-elements_structure.location[0] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
-                fcy.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[ALL_FRAMES[h][k][j].location[1]-elements_structure.location[1] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
-                fcz.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[ALL_FRAMES[h][k][j].location[2]-elements_structure.location[2] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
+                fcx.keyframe_points.foreach_set('co',[x for co in zip(range(0,num_frames),[ALL_FRAMES[h][k][j].location[0]-elements_structure.location[0] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
+                fcy.keyframe_points.foreach_set('co',[x for co in zip(range(0,num_frames),[ALL_FRAMES[h][k][j].location[1]-elements_structure.location[1] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
+                fcz.keyframe_points.foreach_set('co',[x for co in zip(range(0,num_frames),[ALL_FRAMES[h][k][j].location[2]-elements_structure.location[2] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
 
                 fcx.update()
                 fcy.update()
