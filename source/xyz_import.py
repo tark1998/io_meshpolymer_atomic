@@ -779,64 +779,62 @@ def build_frames(frame_delta, frame_skip):
 
     # Introduce the basis for all elements that appear in the structure.
     for element in STRUCTURE:
-        if "curve" in element.name:
-            pass
-        else:
-            bpy.ops.object.select_all(action='DESELECT')
-            bpy.context.view_layer.objects.active = element
-            element.select_set(True)
-            bpy.ops.object.shape_key_add(True)
+        if "curve" in element.name: continue
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.context.view_layer.objects.active = element
+        element.select_set(True)
+        bpy.ops.object.shape_key_add(True)
 
     frame_skip += 1
 
     num_frames = len (ALL_FRAMES) // frame_skip
     for k,elements_structure in enumerate(STRUCTURE):
-        if "curve" in elements_structure.name:
-            '''
-            ad = elements_structure.animation_data_create()
-            a = bpy.data.actions.new('newaction')
+        if "curve" not in elements_structure.name: continue
+        '''
+        ad = elements_structure.animation_data_create()
+        a = bpy.data.actions.new('newaction')
 
-            fcx = a.fcurves.new('location',index=0)
-            fcy = a.fcurves.new('location',index=1)
-            fcz = a.fcurves.new('location',index=2)
+        fcx = a.fcurves.new('location',index=0)
+        fcy = a.fcurves.new('location',index=1)
+        fcz = a.fcurves.new('location',index=2)
 
-            fcx.keyframe_points.add( num_frames)
-            fcy.keyframe_points.add( num_frames)
-            fcz.keyframe_points.add( num_frames)
+        fcx.keyframe_points.add( num_frames)
+        fcy.keyframe_points.add( num_frames)
+        fcz.keyframe_points.add( num_frames)
 
-            fcx.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[0]*num_frames) for x in co])
-            fcy.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[0]*num_frames) for x in co])
-            fcz.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[0]*num_frames) for x in co])
+        fcx.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[0]*num_frames) for x in co])
+        fcy.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[0]*num_frames) for x in co])
+        fcz.keyframe_points.foreach_set('co',[x for co in zip(range(1,num_frames+1),[0]*num_frames) for x in co])
+
+        fcx.update()
+        fcy.update()
+        fcz.update()
+
+        ad.action = a
+        '''
+
+        ad = elements_structure.data.splines.data.animation_data_create()
+        a = bpy.data.actions.new('Curve_'+elements_structure.name)
+
+        for j,point in enumerate(elements_structure.data.splines[0].points):
+            fcx = a.fcurves.new(f'splines[0].points[{j:d}].co',index=0)
+            fcy = a.fcurves.new(f'splines[0].points[{j:d}].co',index=1)
+            fcz = a.fcurves.new(f'splines[0].points[{j:d}].co',index=2)
+
+            fcx.keyframe_points.add( num_frames )
+            fcy.keyframe_points.add( num_frames )
+            fcz.keyframe_points.add( num_frames )
+
+            #xyz = Matrix([atom_frame.location for atom_frame in elements_frame])
+
+            fcx.keyframe_points.foreach_set('co',[x for co in zip(range(0,num_frames),[ALL_FRAMES[h][k][j].location[0]-elements_structure.location[0] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
+            fcy.keyframe_points.foreach_set('co',[x for co in zip(range(0,num_frames),[ALL_FRAMES[h][k][j].location[1]-elements_structure.location[1] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
+            fcz.keyframe_points.foreach_set('co',[x for co in zip(range(0,num_frames),[ALL_FRAMES[h][k][j].location[2]-elements_structure.location[2] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
 
             fcx.update()
             fcy.update()
             fcz.update()
-
-            ad.action = a
-            '''
-
-            ad = elements_structure.data.splines.data.animation_data_create()
-            a = bpy.data.actions.new('Curve_'+elements_structure.name)
-
-            for j,point in enumerate(elements_structure.data.splines[0].points):
-                fcx = a.fcurves.new(f'splines[0].points[{j:d}].co',index=0)
-                fcy = a.fcurves.new(f'splines[0].points[{j:d}].co',index=1)
-                fcz = a.fcurves.new(f'splines[0].points[{j:d}].co',index=2)
-
-                fcx.keyframe_points.add( num_frames )
-                fcy.keyframe_points.add( num_frames )
-                fcz.keyframe_points.add( num_frames )
-
-                #xyz = Matrix([atom_frame.location for atom_frame in elements_frame])
-
-                fcx.keyframe_points.foreach_set('co',[x for co in zip(range(0,num_frames),[ALL_FRAMES[h][k][j].location[0]-elements_structure.location[0] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
-                fcy.keyframe_points.foreach_set('co',[x for co in zip(range(0,num_frames),[ALL_FRAMES[h][k][j].location[1]-elements_structure.location[1] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
-                fcz.keyframe_points.foreach_set('co',[x for co in zip(range(0,num_frames),[ALL_FRAMES[h][k][j].location[2]-elements_structure.location[2] for h in range(0,len(ALL_FRAMES),frame_skip)]) for x in co])
-
-                fcx.update()
-                fcy.update()
-                fcz.update()
-            ad.action = a
+        ad.action = a
 
     # Introduce the keys and reference the atom positions for each key.
     i = 0
@@ -866,6 +864,7 @@ def build_frames(frame_delta, frame_skip):
     # Manage the values of the keys
     for element in STRUCTURE:
         if "curve" in element.name: continue
+        '''
         scn.frame_current = 0
 
         element.data.shape_keys.key_blocks[1].value = 1.0
@@ -894,3 +893,16 @@ def build_frames(frame_delta, frame_skip):
         element.data.shape_keys.key_blocks[number-1].value = 0.0
         element.data.shape_keys.key_blocks[number].keyframe_insert("value")
         element.data.shape_keys.key_blocks[number-1].keyframe_insert("value")
+        '''
+        ad = element.data.shape_keys.key_blocks.data.animation_data_create()
+        a = bpy.data.actions.new('Mesh_'+element.name+"Action")
+        for number,point in enumerate(element.data.shape_keys.key_blocks):
+
+            fc = a.fcurves.new(f'key_blocks[{number+1:d}].value')
+
+            fc.keyframe_points.add( num_frames )
+
+            fc.keyframe_points.foreach_set('co',[x for val in zip(range(0,num_frames),[1 if h==number else 0 for h in range(0,num_frames,frame_skip)]) for x in val])
+
+            fc.update()
+        ad.action = a
