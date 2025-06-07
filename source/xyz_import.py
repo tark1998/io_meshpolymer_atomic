@@ -780,10 +780,11 @@ def build_frames(frame_delta, frame_skip):
     # Introduce the basis for all elements that appear in the structure.
     for element in STRUCTURE:
         if "curve" in element.name: continue
-        bpy.ops.object.select_all(action='DESELECT')
-        bpy.context.view_layer.objects.active = element
-        element.select_set(True)
-        bpy.ops.object.shape_key_add(True)
+        #bpy.ops.object.select_all(action='DESELECT')
+        #bpy.context.view_layer.objects.active = element
+        #element.select_set(True)
+        #bpy.ops.object.shape_key_add(True)
+        element.shape_key_add()
 
     frame_skip += 1
 
