@@ -6,6 +6,7 @@ import os
 import bpy
 from math import pi, sqrt
 from mathutils import Vector, Matrix
+import collections
 
 # -----------------------------------------------------------------------------
 #                                                  Atom and element data
@@ -233,6 +234,8 @@ def read_xyz_file(filepath_xyz,radiustype):
             line = line.rstrip()
 
             all_atoms= []
+            # Use a set to collect unique element names encountered in the current frame
+            current_frame_elements_names = set()
             for i in range(number_atoms):
 
 
@@ -308,6 +311,7 @@ def read_xyz_file(filepath_xyz,radiustype):
                 location = Vector((x,y,z))
 
                 all_atoms.append([short_name, name, location, radius, color])
+                current_frame_elements_names.add(name)
 
             # We note here all elements. This needs to be done only once.
             if number_frames == 0:
@@ -323,6 +327,8 @@ def read_xyz_file(filepath_xyz,radiustype):
                 total_number_atoms = number_atoms
 
 
+                elements_for_structure_order = sorted(list(current_frame_elements_names))
+                '''
                 elements = []
                 for atom in all_atoms:
                     FLAG_FOUND = False
@@ -337,8 +343,18 @@ def read_xyz_file(filepath_xyz,radiustype):
                         # Stored are: Atom label (e.g. 'Na'), the corresponding
                         # atom name (e.g. 'Sodium') and its color.
                         elements.append(atom[1])
-
+                '''
             # Sort the atoms: create lists of atoms of one type
+            atoms_by_type = collections.defaultdict(list)
+            for atom_data in all_atoms:
+                # atom_data is [short_name, name, location, radius, color]
+                atoms_by_type[atom_data[1]].append(AtomProp(atom_data[0],
+                                                            atom_data[1],
+                                                            atom_data[2],
+                                                            atom_data[3],
+                                                            atom_data[4], []))
+            structure = [atoms_by_type[el_name] for el_name in elements_for_structure_order]
+            '''
             structure = []
             for element in elements:
                 atoms_one_type = []
@@ -351,9 +367,10 @@ def read_xyz_file(filepath_xyz,radiustype):
                                                        atom[4],[]))
                 structure.append(atoms_one_type)
 
+            FLAG = False
+            '''
             ALL_FRAMES.append(structure)
             number_frames += 1
-            FLAG = False
 
     filepath_xyz_p.close()
 
