@@ -201,16 +201,25 @@ def read_xyz_file(filepath_xyz,radiustype):
     number_frames = 0
     total_number_atoms = 0
 
+    # Convert radiustype to int once
+    radiustype_int = int(radiustype)
+    # --- Pre-process ELEMENTS for faster lookup ---
+    element_lookup = {str.upper(el.short_name): el for el in ELEMENTS}
+    vacancy_element = element_lookup.get("Vac", None)
+    default_element = element_lookup.get("Default", None)
     # Open the file ...
     filepath_xyz_p = open(filepath_xyz, "r")
+    line_iterator = iter(filepath_xyz_p)
 
     #Go through the whole file.
     FLAG = False
-    for line in filepath_xyz_p:
+    #for line in filepath_xyz_p:
+    while True:
+        try: line = next(line_iterator).strip()
+        except StopIteration: break
 
         # ... the loop is broken here (EOF) ...
-        if line == "":
-            continue
+        if line == "": continue
 
         split_list = line.rsplit()
 
@@ -220,7 +229,7 @@ def read_xyz_file(filepath_xyz,radiustype):
 
         if FLAG == True:
 
-            line = filepath_xyz_p.readline()
+            line = next(line_iterator).strip()#filepath_xyz_p.readline()
             line = line.rstrip()
 
             all_atoms= []
@@ -240,12 +249,29 @@ def read_xyz_file(filepath_xyz,radiustype):
                         break
 
 
-                line = filepath_xyz_p.readline()
+                line = next(line_iterator).strip()#filepath_xyz_p.readline()
                 line = line.rstrip()
                 split_list = line.rsplit()
                 short_name = str(split_list[0])
 
                 # Go through all elements and find the element of the current atom.
+                short_name_upper = str.upper(short_name)
+                element_info = element_lookup.get(short_name_upper)
+                if element_info:
+                    name = element_info.name
+                    radius = float(element_info.radii[radiustype_int])
+                    color = element_info.color
+                else:
+                    if "X" in short_name_upper:
+                        name = "Vacancy"
+                        radius = float(vacancy_element.radii[radiustype_int])
+                        color = vacancy_element.color
+                    else:
+                        name = short_name_upper # Use the upper-cased short name as the default name
+                        radius = float(default_element.radii[radiustype_int])
+                        color = default_element.color
+
+                '''
                 FLAG_FOUND = False
                 for element in ELEMENTS:
                     if str.upper(short_name) == str.upper(element.short_name):
@@ -257,7 +283,6 @@ def read_xyz_file(filepath_xyz,radiustype):
                         color = element.color
                         FLAG_FOUND = True
                         break
-
                 # Is it a vacancy or an 'unknown atom' ?
                 if FLAG_FOUND == False:
                     # Give this atom also a name. If it is an 'X' then it is a
@@ -274,6 +299,7 @@ def read_xyz_file(filepath_xyz,radiustype):
                         name = str.upper(short_name)
                         radius = float(ELEMENTS[-2].radii[int(radiustype)])
                         color = ELEMENTS[-2].color
+                '''
 
                 x = float(split_list[1])
                 y = float(split_list[2])
